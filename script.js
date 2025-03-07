@@ -1,27 +1,18 @@
-function showSection(sectionId) {
-  document.querySelectorAll('.section').forEach(section => {
-    section.classList.add('hidden');
-  });
-  document.getElementById(`${sectionId}Section`).classList.remove('hidden');
-  // Update button states
-  document.getElementById('homeBtn').classList.remove('text-primary');
-  document.getElementById('shareBtn').classList.remove('text-primary');
-  document.getElementById(`${sectionId}Btn`).classList.add('text-primary');
-  // Show/hide jar image
-  const jarImage = document.getElementById('jarImage');
-  jarImage.style.visibility = sectionId === 'home' ? 'visible' : 'hidden';
+// Replace the URL below with your actual Web App URL from the Apps Script deployment
+const API_URL = 'https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec';
+
+async function fetchMessages() {
+  try {
+    const response = await fetch(https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec);
+    const messages = await response.json();
+    renderMessages(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+  }
 }
 
-const messages = [
-  { id: 1, name: "Emma Thompson", message: "Empowered women empower women. Let's celebrate our achievements together! 🌟", likes: 42 },
-  { id: 2, name: "Sarah Mitchell", message: "Every day is a chance to make a difference. Keep shining bright! ✨", likes: 38 },
-  { id: 3, name: "Isabella Garcia", message: "Here's to strong women: may we know them, may we be them, may we raise them! 💪", likes: 56 },
-  { id: 4, name: "Olivia Wilson", message: "Your potential is limitless. Dream big and achieve bigger! 🚀", likes: 29 },
-  { id: 5, name: "Sophie Anderson", message: "Together we can create a world of equal opportunities. Keep pushing forward! 🌈", likes: 45 },
-  { id: 6, name: "Charlotte Davis", message: "You are stronger than you know. Never doubt your capabilities! ❤️", likes: 33 }
-];
-
-function renderMessages() {
+function renderMessages(messages) {
+  // Optionally sort messages by likes or timestamp (here we sort by likes)
   messages.sort((a, b) => b.likes - a.likes);
   const container = document.getElementById('messageContainer');
   container.innerHTML = messages.map(msg => `
@@ -43,7 +34,7 @@ function renderMessages() {
                 <i class="ri-heart-line"></i>
                 <span class="text-sm">${msg.likes}</span>
               </button>
-              <span class="text-xs text-gray-400">Just now</span>
+              <span class="text-xs text-gray-400">${new Date(msg.timestamp).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -52,44 +43,63 @@ function renderMessages() {
   `).join('');
 }
 
-function likeMessage(id) {
-  const message = messages.find(m => m.id === id);
-  if (message) {
-    message.likes++;
-    const heartIcon = event.target.closest('button').querySelector('i');
-    heartIcon.classList.remove('ri-heart-line');
-    heartIcon.classList.add('ri-heart-fill', 'text-primary');
-    gsap.to(heartIcon, {
-      scale: 1.5,
-      duration: 0.2,
-      yoyo: true,
-      repeat: 1,
-      ease: "power2.out"
+async function addMessage() {
+  const messageInput = document.getElementById('messageInput');
+  const authorInput = document.getElementById('authorInput');
+  const messageText = messageInput.value.trim();
+  if (!messageText) return;
+  
+  const payload = {
+    name: authorInput.value.trim() || "Anonymous",
+    message: messageText
+  };
+  
+  try {
+    const response = await fetch(https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    setTimeout(() => renderMessages(), 500);
+    const result = await response.json();
+    if (result.result === "success") {
+      // Clear form fields
+      messageInput.value = '';
+      authorInput.value = '';
+      // Refresh messages on the home screen
+      fetchMessages();
+      // Animate the newly added message (optional)
+      gsap.from("#messageContainer > div:first-child", {
+        duration: 0.5,
+        y: -50,
+        opacity: 0,
+        ease: "back.out"
+      });
+    } else {
+      console.error("Error adding message:", result.error);
+    }
+  } catch (err) {
+    console.error("Error in addMessage:", err);
   }
 }
 
-function addMessage() {
-  const messageInput = document.getElementById('messageInput');
-  const authorInput = document.getElementById('authorInput');
-  if (messageInput.value.trim()) {
-    messages.unshift({
-      id: messages.length + 1,
-      name: authorInput.value.trim() || "Anonymous",
-      message: messageInput.value,
-      likes: 0
-    });
-    messageInput.value = '';
-    authorInput.value = '';
-    renderMessages();
-    gsap.from("#messageContainer > div:first-child", {
-      duration: 0.5,
-      y: -50,
-      opacity: 0,
-      ease: "back.out"
-    });
-  }
+// Note: This function currently only provides a visual effect.
+// To persist likes in your backend, you'll need to implement an additional API endpoint.
+function likeMessage(id) {
+  console.warn("likeMessage functionality is not implemented for persistence.");
+}
+
+function showSection(sectionId) {
+  document.querySelectorAll('.section').forEach(section => {
+    section.classList.add('hidden');
+  });
+  document.getElementById(`${sectionId}Section`).classList.remove('hidden');
+  // Update button states
+  document.getElementById('homeBtn').classList.remove('text-primary');
+  document.getElementById('shareBtn').classList.remove('text-primary');
+  document.getElementById(`${sectionId}Btn`).classList.add('text-primary');
+  // Show or hide the jar image based on the section
+  const jarImage = document.getElementById('jarImage');
+  jarImage.style.visibility = sectionId === 'home' ? 'visible' : 'hidden';
 }
 
 function updateCountdown() {
@@ -106,10 +116,12 @@ function updateCountdown() {
   document.getElementById('seconds').textContent = seconds;
 }
 
-renderMessages();
+// Initialize the app
+fetchMessages();
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
+// Initial GSAP animations
 gsap.from("#homeSection header", {
   duration: 1,
   y: 30,
