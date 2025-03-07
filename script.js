@@ -1,11 +1,11 @@
-// Replace the URL below with your actual Web App URL from your Apps Script deployment
+// Replace the URL below with your actual Web App URL from the Apps Script deployment
 const API_URL = 'https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec';
 
 document.addEventListener("DOMContentLoaded", function() {
 
   async function fetchMessages() {
     try {
-      const response = await fetch(https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec);
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec');
       const messages = await response.json();
       renderMessages(messages);
     } catch (err) {
@@ -14,10 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function renderMessages(messages) {
-    // Sort messages by likes (or use another criteria, like timestamp)
+    // Sort messages by likes (or by another criterion, e.g., timestamp)
     messages.sort((a, b) => b.likes - a.likes);
     const container = document.getElementById('messageContainer');
-    container.innerHTML = messages.map(msg => `
+    container.innerHTML = messages.map(msg => {
+      return `
       <div class="relative w-full aspect-square">
         <div class="absolute inset-0 transform hover:-translate-y-1 transition-transform animate__animated animate__fadeIn">
           <div class="message-heart h-full">
@@ -42,7 +43,8 @@ document.addEventListener("DOMContentLoaded", function() {
           </div>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
   }
 
   async function addMessage() {
@@ -57,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     
     try {
-      const response = await fetch(https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec, {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
         authorInput.value = '';
         // Refresh messages on the home screen
         fetchMessages();
-        // Optional: Animate the newly added message
+        // Optional: animate the newly added message
         gsap.from("#messageContainer > div:first-child", {
           duration: 0.5,
           y: -50,
@@ -84,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // For now, the likeMessage function only logs a warning.
-  // To persist likes, you’d need to implement an endpoint in your Apps Script.
+  // Placeholder: likeMessage currently only logs a warning.
+  // To persist likes, you would need to implement an endpoint in your Apps Script.
   function likeMessage(id) {
     console.warn("likeMessage functionality is not implemented for persistence.");
   }
@@ -94,14 +96,14 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.section').forEach(section => {
       section.classList.add('hidden');
     });
-    const activeSection = document.getElementById(`${sectionId}Section`);
+    const activeSection = document.getElementById(sectionId + "Section");
     if (activeSection) {
       activeSection.classList.remove('hidden');
     }
     // Update button states
     document.getElementById('homeBtn').classList.remove('text-primary');
     document.getElementById('shareBtn').classList.remove('text-primary');
-    document.getElementById(`${sectionId}Btn`).classList.add('text-primary');
+    document.getElementById(sectionId + "Btn").classList.add('text-primary');
     // Show or hide the jar image based on the active section
     const jarImage = document.getElementById('jarImage');
     jarImage.style.visibility = sectionId === 'home' ? 'visible' : 'hidden';
@@ -121,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById('seconds').textContent = seconds;
   }
 
-  // Initial calls after DOM is loaded
+  // Initialize the app
   fetchMessages();
   setInterval(updateCountdown, 1000);
   updateCountdown();
@@ -152,8 +154,9 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Expose these functions to the global scope so inline HTML events can call them
+  // Expose functions to the global scope for inline event handlers
   window.showSection = showSection;
   window.addMessage = addMessage;
   window.likeMessage = likeMessage;
+
 });
