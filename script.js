@@ -1,12 +1,12 @@
 // Replace with your actual Web App URL from your Apps Script deployment
-const API_URL = 'https://script.google.com/macros/s/AKfycby8OSiPVY8bgBrnvAONMoGIKr9QmySejnIkDwjfkDqCBeWMicZ2liZ5BsqCEQDAlhsk/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch messages from the Google Sheet via the GET endpoint.
   async function fetchMessages() {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycby8OSiPVY8bgBrnvAONMoGIKr9QmySejnIkDwjfkDqCBeWMicZ2liZ5BsqCEQDAlhsk/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec');
       const messages = await response.json();
       console.log("Fetched messages:", messages);
       renderMessages(messages);
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('Name', authorInput.value.trim() || "Anonymous");
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycby8OSiPVY8bgBrnvAONMoGIKr9QmySejnIkDwjfkDqCBeWMicZ2liZ5BsqCEQDAlhsk/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
