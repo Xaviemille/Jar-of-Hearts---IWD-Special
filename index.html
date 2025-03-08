@@ -91,7 +91,7 @@
         <h1 class="font-['Pacifico'] text-4xl text-primary mb-2">Jar of Hearts</h1>
         <p class="text-gray-600 mb-8">Share your love and support for International Women's Day</p>
         <div class="bg-white rounded-lg shadow-lg p-8 mb-12">
-          <h2 class="text-2xl font-semibold mb-4 text-primary">Countdown to IWD 2025</h2>
+          <h2 class="text-2xl font-semibold mb-4 text-primary">Countdown to End of March 2025</h2>
           <div id="countdown" class="grid grid-cols-4 gap-4">
             <div class="bg-primary/10 rounded-lg p-4">
               <span id="days" class="block text-3xl font-bold text-primary">0</span>
@@ -112,7 +112,10 @@
           </div>
         </div>
       </header>
-      <div id="messageContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"></div>
+      <div id="messageContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <!-- Default notice until messages load -->
+        <p class="text-center text-gray-600 col-span-full">Messages loading...</p>
+      </div>
     </div>
     <!-- Share Message Section -->
     <div id="shareSection" class="section hidden">
