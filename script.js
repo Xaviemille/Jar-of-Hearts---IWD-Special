@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <i class="ri-user-smile-line text-lg"></i>
                 </div>
                 <div class="ml-2">
-                  <h4 class="font-semibold text-sm">${msg.name}</h4>
+                  <h4 class="font-semibold text-sm text-primary">${msg.name}</h4>
                 </div>
               </div>
               <p class="text-gray-600 text-sm flex-grow overflow-y-auto">${msg.message}</p>
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!-- Pass the current button element and the row number to the likeMessage function -->
                 <button onclick="likeMessage(this, ${msg.row})" class="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors cursor-pointer">
                   <i class="ri-heart-line"></i>
-                  <span class="text-sm">${msg.likes}</span>
+                  <span class="text-sm text-primary">${msg.likes}</span>
                 </button>
                 <span class="text-xs text-gray-400">${new Date(msg.date).toLocaleString()}</span>
               </div>
@@ -123,9 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
     jarImage.style.visibility = sectionId === 'home' ? 'visible' : 'hidden';
   }
 
-  // Countdown timer update
+  // Update the countdown timer until the end of March 2025
   function updateCountdown() {
-    const target = new Date('2025-03-08T00:00:00');
+    // Set target to March 31, 2025 at 23:59:59
+    const target = new Date('2025-03-31T23:59:59');
     const now = new Date();
     const diff = target - now;
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
