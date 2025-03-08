@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   async function fetchMessages() {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec');
+      const response = await fetch(https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec');
       const messages = await response.json();
       renderMessages(messages);
     } catch (err) {
