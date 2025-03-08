@@ -1,44 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jar of Hearts - IWD Special</title>
-  <!-- Tailwind CSS -->
+  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <!-- Remixicon -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+  <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script>
-    // Tailwind configuration
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#FF69B4',
-            secondary: '#FFB6C1'
-          },
-          borderRadius: {
-            'none': '0px',
-            'sm': '4px',
-            DEFAULT: '8px',
-            'md': '12px',
-            'lg': '16px',
-            'xl': '20px',
-            '2xl': '24px',
-            '3xl': '32px',
-            'full': '9999px',
-            'button': '8px'
-          }
-        }
-      }
+  <style>
+    :where([class^="ri-"])::before { content: "\f3c2"; }
+    @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .heart-beat { animation: heartBeat 0.5s ease-in-out; }
+    .message-heart { position: relative; width: 100%; height: 100%; }
+    .message-heart::before,
+    .message-heart::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      width: 50%;
+      height: 80%;
+      border-radius: 50px 50px 0 0;
+      background-color: #FF69B4;
+      opacity: 0.1;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-  </script>
-  <!-- Link to custom styles -->
-  <link rel="stylesheet" href="styles.css">
+    .message-heart::before { left: 50%; transform: rotate(-45deg); transform-origin: 0 100%; }
+    .message-heart::after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; }
+  </style>
 </head>
 <body class="bg-[#FFF8DC] min-h-screen relative">
   <nav class="bg-white shadow-lg mb-8 relative">
@@ -49,47 +46,46 @@
       <div class="flex justify-center h-16">
         <div class="flex space-x-4 items-center">
           <button onclick="showSection('home')" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors" id="homeBtn">
-            <i class="ri-home-line mr-2"></i>
-            Home
+            <i class="ri-home-line mr-2"></i> Home
           </button>
           <button onclick="showSection('share')" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors" id="shareBtn">
-            <i class="ri-message-3-line mr-2"></i>
-            Share Message
+            <i class="ri-message-3-line mr-2"></i> Share Message
           </button>
         </div>
       </div>
     </div>
   </nav>
   <div class="max-w-6xl mx-auto px-4">
+    <!-- Home Section -->
     <div id="homeSection" class="section">
       <header class="text-center mb-12">
         <h1 class="font-['Pacifico'] text-4xl text-primary mb-2">Jar of Hearts</h1>
         <p class="text-gray-600 mb-8">Share your love and support for International Women's Day</p>
         <div class="bg-white rounded-lg shadow-lg p-8 mb-12">
           <h2 class="text-2xl font-semibold mb-4">Countdown to IWD 2025</h2>
-          <div class="grid grid-cols-4 gap-4" id="countdown">
+          <div id="countdown" class="grid grid-cols-4 gap-4">
             <div class="bg-primary/10 rounded-lg p-4">
-              <span class="block text-3xl font-bold text-primary" id="days">0</span>
+              <span id="days" class="block text-3xl font-bold text-primary">0</span>
               <span class="text-sm text-gray-600">Days</span>
             </div>
             <div class="bg-primary/10 rounded-lg p-4">
-              <span class="block text-3xl font-bold text-primary" id="hours">0</span>
+              <span id="hours" class="block text-3xl font-bold text-primary">0</span>
               <span class="text-sm text-gray-600">Hours</span>
             </div>
             <div class="bg-primary/10 rounded-lg p-4">
-              <span class="block text-3xl font-bold text-primary" id="minutes">0</span>
+              <span id="minutes" class="block text-3xl font-bold text-primary">0</span>
               <span class="text-sm text-gray-600">Minutes</span>
             </div>
             <div class="bg-primary/10 rounded-lg p-4">
-              <span class="block text-3xl font-bold text-primary" id="seconds">0</span>
+              <span id="seconds" class="block text-3xl font-bold text-primary">0</span>
               <span class="text-sm text-gray-600">Seconds</span>
             </div>
           </div>
         </div>
       </header>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12" id="messageContainer">
-      </div>
+      <div id="messageContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"></div>
     </div>
+    <!-- Share Message Section -->
     <div id="shareSection" class="section hidden">
       <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8">
@@ -100,7 +96,7 @@
           <div class="flex flex-col gap-4">
             <input type="text" id="messageInput" class="border border-gray-200 rounded-button px-4 py-2" placeholder="Write your encouraging message...">
             <input type="text" id="authorInput" class="border border-gray-200 rounded-button px-4 py-2" placeholder="Your name...">
-            <button onclick="addMessage(); showSection('home')" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-primary/90 transition-colors !rounded-button whitespace-nowrap cursor-pointer w-full">Share Love</button>
+            <button onclick="addMessage(); showSection('home')" class="bg-primary text-white px-6 py-2 rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap cursor-pointer w-full">Share Love</button>
           </div>
         </div>
       </div>
@@ -109,7 +105,6 @@
       </div>
     </div>
   </div>
-  <!-- Link to external JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
