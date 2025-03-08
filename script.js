@@ -1,11 +1,11 @@
 // Replace the URL below with your actual Web App URL from the Apps Script deployment
-const API_URL = 'https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec';
 
 document.addEventListener("DOMContentLoaded", function() {
 
   async function fetchMessages() {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec');
       const messages = await response.json();
       renderMessages(messages);
     } catch (err) {
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyBdzBxd3F39wdxDzyZnIa-lyuEpik4T1meYFq04MWeB8KBhP_Ldm_L6ImqkbLucsSB/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
