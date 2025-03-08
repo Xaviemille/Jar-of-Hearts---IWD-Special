@@ -1,9 +1,9 @@
-// Replace this with your actual Web App URL from the Apps Script deployment
+// Replace with your actual Web App URL from your Apps Script deployment
 const API_URL = 'https://script.google.com/macros/s/AKfycby8OSiPVY8bgBrnvAONMoGIKr9QmySejnIkDwjfkDqCBeWMicZ2liZ5BsqCEQDAlhsk/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Fetch messages from the Google Sheet via the Apps Script GET endpoint
+  // Fetch messages from the Google Sheet via the GET endpoint.
   async function fetchMessages() {
     try {
       const response = await fetch('https://script.google.com/macros/s/AKfycby8OSiPVY8bgBrnvAONMoGIKr9QmySejnIkDwjfkDqCBeWMicZ2liZ5BsqCEQDAlhsk/exec');
@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Render messages into the home screen message container.
-  // Assumes each message object has keys: date, message, name, likes.
+  // Render messages into the message container.
+  // Each message object is expected to have: row, date, message, name, likes.
   function renderMessages(messages) {
     // Sort messages by date descending (newest first)
     messages.sort((a, b) => new Date(b.date) - new Date(a.date));
     const container = document.getElementById('messageContainer');
-    container.innerHTML = messages.map((msg, index) => {
+    container.innerHTML = messages.map(msg => {
       return `
       <div class="relative w-full aspect-square">
         <div class="absolute inset-0 transform hover:-translate-y-1 transition-transform animate__animated animate__fadeIn">
@@ -37,8 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <p class="text-gray-600 text-sm flex-grow overflow-y-auto">${msg.message}</p>
               <div class="flex items-center justify-between mt-2">
-                <!-- The like button uses the row number (assumes header is row 1) -->
-                <button onclick="likeMessage(${index + 2})" class="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors cursor-pointer">
+                <button onclick="likeMessage(${msg.row})" class="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors cursor-pointer">
                   <i class="ri-heart-line"></i>
                   <span class="text-sm">${msg.likes}</span>
                 </button>
@@ -53,14 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Post a new message using a POST request.
-  // It sends URL-encoded form data with two parameters: "Message" and "Name".
+  // The form sends URL-encoded data with two parameters: "Message" and "Name".
   async function addMessage() {
     const messageInput = document.getElementById('messageInput');
     const authorInput = document.getElementById('authorInput');
     const messageText = messageInput.value.trim();
     if (!messageText) return;
 
-    // Create URL-encoded form data
     const formData = new URLSearchParams();
     formData.append('Message', messageText);
     formData.append('Name', authorInput.value.trim() || "Anonymous");
@@ -79,9 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clear form inputs
         messageInput.value = '';
         authorInput.value = '';
-        // Refresh the list of messages on the home screen
+        // Refresh messages on the home screen
         fetchMessages();
-        // Optional GSAP animation for the newly added message
+        // Optional: animate the newly added message
         gsap.from("#messageContainer > div:first-child", {
           duration: 0.5,
           y: -50,
@@ -96,13 +94,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // A placeholder for like functionality.
-  // To implement persistent like updates, you would need to call your doPut endpoint.
-  function likeMessage(row) {
-    console.warn("likeMessage function is not implemented in this example.");
+  // When a user clicks "like," send a GET request with action=like and the message row number.
+  async function likeMessage(row) {
+    try {
+      const response = await fetch(API_URL + "?action=like&row=" + row);
+      const result = await response.json();
+      console.log("Like result:", result);
+      if (result.status === "success") {
+        // Refresh messages after the like update
+        fetchMessages();
+      } else {
+        console.error("Error liking message:", result.message);
+      }
+    } catch (err) {
+      console.error("Error in likeMessage:", err);
+    }
   }
 
-  // Function to toggle between sections (e.g., home and share)
+  // Toggle between sections (e.g., Home and Share Message)
   function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(section => {
       section.classList.add('hidden');
@@ -140,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateCountdown, 1000);
   updateCountdown();
 
-  // Initial GSAP animations (if GSAP is included via CDN)
+  // Initial GSAP animations (if GSAP is loaded via CDN)
   gsap.from("#homeSection header", {
     duration: 1,
     y: 30,
@@ -155,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ease: "back.out(1.7)"
   });
 
-  // Expose functions to the global scope for inline HTML event handlers
+  // Expose functions to the global scope for inline event handlers in your HTML
   window.showSection = showSection;
   window.addMessage = addMessage;
   window.likeMessage = likeMessage;
