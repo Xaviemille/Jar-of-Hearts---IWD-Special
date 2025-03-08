@@ -53,10 +53,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const messageText = messageInput.value.trim();
     if (!messageText) return;
     
-    const payload = {
-      name: authorInput.value.trim() || "Anonymous",
-      message: messageText
-    };
+  const payload = {
+  name: document.getElementById('authorInput').value.trim() || "Anonymous",
+  message: document.getElementById('messageInput').value.trim()
+};
+
     
     try {
       const response = await fetch('https://script.google.com/macros/s/AKfycbxkRoQT1vN4P-HI4e0aGh8t8855gZTXOBneatpl9Co-UIOKEvDVbZ5AoSe_dUpE_rhl/exec', {
