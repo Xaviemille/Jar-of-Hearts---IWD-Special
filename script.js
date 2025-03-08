@@ -1,12 +1,12 @@
 // Replace with your actual Web App URL from your Apps Script deployment
-const API_URL = 'https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwrdeC82-JppPNefQMDG42XZMVWWQwq942S1Zwob-di_0BqWLY-pSB46xeVsEFmFa8E/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Fetch messages from the Google Sheet via the GET endpoint.
+  // Fetch messages from the GET endpoint
   async function fetchMessages() {
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwrdeC82-JppPNefQMDG42XZMVWWQwq942S1Zwob-di_0BqWLY-pSB46xeVsEFmFa8E/exec');
       const messages = await response.json();
       console.log("Fetched messages:", messages);
       renderMessages(messages);
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Render messages into the message container.
-  // Each message object is expected to have: row, date, message, name, likes.
+  // Each message is expected to include a 'row' property (its sheet row number).
   function renderMessages(messages) {
     // Sort messages by date descending (newest first)
     messages.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -37,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <p class="text-gray-600 text-sm flex-grow overflow-y-auto">${msg.message}</p>
               <div class="flex items-center justify-between mt-2">
-                <button onclick="likeMessage(${msg.row})" class="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors cursor-pointer">
+                <!-- Pass the current button element and the row number to the likeMessage function -->
+                <button onclick="likeMessage(this, ${msg.row})" class="flex items-center gap-1 text-gray-500 hover:text-primary transition-colors cursor-pointer">
                   <i class="ri-heart-line"></i>
                   <span class="text-sm">${msg.likes}</span>
                 </button>
@@ -51,8 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   }
 
-  // Post a new message using a POST request.
-  // The form sends URL-encoded data with two parameters: "Message" and "Name".
+  // Post a new message using URL-encoded form data
   async function addMessage() {
     const messageInput = document.getElementById('messageInput');
     const authorInput = document.getElementById('authorInput');
@@ -64,22 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('Name', authorInput.value.trim() || "Anonymous");
 
     try {
-      const response = await fetch('https://script.google.com/macros/s/AKfycbxgU93SiujHygUfGwNSqXy4UqT0BOnoPJ4AJUKI6IDPP5uR_CH4wbn0khGz2Cy3JcOW/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwrdeC82-JppPNefQMDG42XZMVWWQwq942S1Zwob-di_0BqWLY-pSB46xeVsEFmFa8E/exec', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
         body: formData.toString()
       });
       const result = await response.json();
       console.log("POST result:", result);
       if (result.result === "success") {
-        // Clear form inputs
         messageInput.value = '';
         authorInput.value = '';
-        // Refresh messages on the home screen
         fetchMessages();
-        // Optional: animate the newly added message
         gsap.from("#messageContainer > div:first-child", {
           duration: 0.5,
           y: -50,
@@ -94,42 +89,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // When a user clicks "like," send a GET request with action=like and the message row number.
-  async function likeMessage(row) {
+  // Like a message with optimistic UI update
+  async function likeMessage(el, row) {
+    const span = el.querySelector('span');
+    let currentLikes = parseInt(span.textContent) || 0;
+    // Immediately update the UI
+    span.textContent = currentLikes + 1;
     try {
       const response = await fetch(API_URL + "?action=like&row=" + row);
       const result = await response.json();
       console.log("Like result:", result);
       if (result.status === "success") {
-        // Refresh messages after the like update
-        fetchMessages();
+        span.textContent = result.likes;
       } else {
         console.error("Error liking message:", result.message);
+        span.textContent = currentLikes;
       }
     } catch (err) {
       console.error("Error in likeMessage:", err);
+      span.textContent = currentLikes;
     }
   }
 
-  // Toggle between sections (e.g., Home and Share Message)
+  // Toggle sections (Home and Share)
   function showSection(sectionId) {
-    document.querySelectorAll('.section').forEach(section => {
-      section.classList.add('hidden');
-    });
+    document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
     const activeSection = document.getElementById(sectionId + "Section");
-    if (activeSection) {
-      activeSection.classList.remove('hidden');
-    }
-    // Update navigation button states
+    if (activeSection) activeSection.classList.remove('hidden');
     document.getElementById('homeBtn').classList.remove('text-primary');
     document.getElementById('shareBtn').classList.remove('text-primary');
     document.getElementById(sectionId + "Btn").classList.add('text-primary');
-    // Optionally, show or hide the jar image
     const jarImage = document.getElementById('jarImage');
     jarImage.style.visibility = sectionId === 'home' ? 'visible' : 'hidden';
   }
 
-  // Update the countdown timer on the home page
+  // Countdown timer update
   function updateCountdown() {
     const target = new Date('2025-03-08T00:00:00');
     const now = new Date();
@@ -149,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateCountdown, 1000);
   updateCountdown();
 
-  // Initial GSAP animations (if GSAP is loaded via CDN)
+  // Initial GSAP animations
   gsap.from("#homeSection header", {
     duration: 1,
     y: 30,
@@ -164,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ease: "back.out(1.7)"
   });
 
-  // Expose functions to the global scope for inline event handlers in your HTML
+  // Expose functions to the global scope for inline HTML event handlers
   window.showSection = showSection;
   window.addMessage = addMessage;
   window.likeMessage = likeMessage;
